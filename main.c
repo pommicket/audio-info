@@ -80,7 +80,7 @@ int audio_duration(const char *filename, uint64_t *len, int accurate) {
 		}
 	}
 	if (format)
-		avformat_free_context(format);
+		avformat_close_input(&format);
 	return success;
 }
 
@@ -297,6 +297,7 @@ int main(int argc, char **argv) {
 
 	if (nthreads <= 0 || nthreads > THREADS_MAX) nthreads = 8;
 
+
 	{
 		static uint64_t durations[THREADS_MAX], sizes_in_bytes[THREADS_MAX];
 		static int32_t file_counts[THREADS_MAX];
@@ -307,11 +308,13 @@ int main(int argc, char **argv) {
 		int32_t batch_size = (file_list.indices_len + nthreads - 1) / nthreads;
 		int32_t remaining = file_list.indices_len;
 
+		printf("%d total files\n",remaining);
 		for (int i = 0; i < nthreads; ++i) {
 			int32_t count = batch_size;
 			if (i == nthreads - 1) count = remaining;
 			if (count > remaining) count = remaining;
 			if (count > 0) {
+				printf("%d for %d\n", count, i);
 				ThreadData* data = &thread_datas[i];
 				data->list = &file_list;
 				data->start_pos = file_list.indices_len - remaining;
@@ -333,6 +336,7 @@ int main(int argc, char **argv) {
 				remaining -= count;
 			}
 		}
+		assert(remaining == 0);
 
 		if (!simple_output) {
 			int n_active = 0;
