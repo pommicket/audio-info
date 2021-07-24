@@ -11,7 +11,11 @@ Check `audio-info --help` for more options.
 
 ----------- INSTALLATION -------
 
-just run:
+Requires libavformat and libavutil. These can be installed on
+Debian/Ubuntu with:
+sudo apt install libavutil-dev libavformat-dev
+
+Now just run:
 sudo make install
 and audio-info will be installed to /usr/bin.
 You can also just run `make` to compile a binary without installing it.
