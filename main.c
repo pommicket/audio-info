@@ -308,13 +308,11 @@ int main(int argc, char **argv) {
 		int32_t batch_size = (file_list.indices_len + nthreads - 1) / nthreads;
 		int32_t remaining = file_list.indices_len;
 
-		printf("%d total files\n",remaining);
 		for (int i = 0; i < nthreads; ++i) {
 			int32_t count = batch_size;
 			if (i == nthreads - 1) count = remaining;
 			if (count > remaining) count = remaining;
 			if (count > 0) {
-				printf("%d for %d\n", count, i);
 				ThreadData* data = &thread_datas[i];
 				data->list = &file_list;
 				data->start_pos = file_list.indices_len - remaining;
